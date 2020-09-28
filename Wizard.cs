@@ -20,6 +20,11 @@ namespace HelloWorld
             _mana = manaVal;
         }
 
+        public void TestFunc()
+        {
+
+        }
+
         public override float Attack(Character enemy)
         {
             float damageTaken = 0.0f;

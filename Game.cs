@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace HelloWorld
 {
+    
     //Create a turn based PvP game. It should have a battle loop where both players
     //must fight until one is dead. The game should allow players to upgrade their stats
     //using items. Both players and items should be defined as structs. 
@@ -136,6 +138,43 @@ namespace HelloWorld
             }
         }
 
+        public void Save()
+        {
+            //Create a new stream writer.
+            StreamWriter writer = new StreamWriter("SaveData.txt");
+            //Call save for both instances for player.
+            _player1.Save(writer);
+            _player2.Save(writer);
+            //Close writer.
+            writer.Close();
+        }
+
+        public void Load()
+        {
+            //Create a new stream reader.
+            StreamReader reader = new StreamReader("SaveData.txt");
+            //Call load for each instance of player to load data.
+            _player1.Load(reader);
+            _player2.Load(reader);
+            //Close reader
+            reader.Close();
+        }
+
+        public void OpenMainMenu()
+        {
+            char input;
+            GetInput(out input, "Create new character", "Load Character", "What do you wanna do?");
+            if (input == '2')
+            {
+                _player1 = new Player();
+                _player2 = new Player();
+                Load();
+                return;
+            }
+            _player1 = CreateCharacter();
+            _player2 = CreateCharacter();
+        }
+
         public Player CreateCharacter()
         {
             Console.WriteLine("What is your name?");
@@ -199,6 +238,7 @@ namespace HelloWorld
 
         }
 
+
         public void StartBattle()
         {
             ClearScreen();
@@ -214,7 +254,7 @@ namespace HelloWorld
                 //Player 1 turn start
                 //Get player input
                 char input;
-                GetInput(out input, "Attack", "Change Weapon", "Your turn Player 1");
+                GetInput(out input, "Attack", "Change Weapon","Save Game", "Your turn Player 1");
 
                 if(input == '1')
                 {
@@ -224,12 +264,16 @@ namespace HelloWorld
                     Console.WriteLine(_player1Partner.GetName() + " did " + damageTaken + " damage.");
 
                 }
-                else
+                else if(input == '2')
                 {
                     SwitchWeapons(_player1);
                 }
+                else
+                {
+                    Save();
+                }
 
-                GetInput(out input, "Attack", "Change Weapon", "Your turn Player 2");
+                GetInput(out input, "Attack", "Change Weapon", "Save Game", "Your turn Player 2");
 
                 if (input == '1')
                 {
@@ -238,9 +282,13 @@ namespace HelloWorld
                     damageTaken = _player2Partner.Attack(_player1);
                     Console.WriteLine(_player2Partner.GetName() + " did " + damageTaken + " damage.");
                 }
-                else
+                else if (input == '2')
                 {
                     SwitchWeapons(_player2);
+                }
+                else
+                {
+                    Save();
                 }
                 Console.Clear();
             }
@@ -261,15 +309,15 @@ namespace HelloWorld
         public void Start()
         {
             InitializeItems();
-            _player1Partner = new Wizard(120, "Wizard Lizard", 20, 100);
-            _player2Partner = new Wizard(120, "Harry Wizard 101", 20, 100);
+            _player1Partner = new Wizard(120, "Wizard Lizard", 5, 100);
+            _player2Partner = new Wizard(120, "Harry Wizard 101", 5, 100);
+           
         }
 
         //Repeated until the game ends
         public void Update()
         {
-            _player1 = CreateCharacter();
-            _player2 = CreateCharacter();
+            OpenMainMenu();
             StartBattle();
         }
 
