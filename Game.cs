@@ -40,6 +40,7 @@ namespace HelloWorld
             while(_gameOver == false)
             {
                 Update();
+                Draw();
             }
 
             End();
@@ -314,9 +315,16 @@ namespace HelloWorld
            
         }
 
+        public void Draw()
+        {
+            map.Draw();
+            player.draw();
+        }
         //Repeated until the game ends
         public void Update()
         {
+            map.Update();
+            player.Update();
             OpenMainMenu();
             StartBattle();
         }

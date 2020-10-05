@@ -58,6 +58,11 @@ namespace HelloWorld
 
         public virtual bool Load(StreamReader reader)
         {
+            if(File.Exists("SaveData.txt") == false)
+            {
+                return false;
+            }
+            
             //Create variables to store loaded data.
             string name = reader.ReadLine();
             float damage = 0;
